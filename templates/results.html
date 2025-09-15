@@ -1,0 +1,360 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Your Personality Results | OCEAN Model</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+        }
+        .tab-button {
+            background: white;
+            color: #4B5563;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+        }
+        .tab-button.active {
+            background: linear-gradient(to right, #4F46E5, #7C3AED);
+            color: white;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+        .tab-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+        .tab-content {
+            animation: fadeIn 0.3s ease-in-out;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .trait-bar {
+            transition: width 1s ease-in-out;
+        }
+    </style>
+</head>
+<body class="bg-gray-50">
+    <!-- Navigation -->
+    <nav class="bg-white border-b border-gray-200 fixed w-full z-50">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between items-center h-16">
+                <div class="flex items-center">
+                    <a href="/" class="text-2xl font-bold bg-gradient-to-r from-indigo-600 via-purple-600 to-pink-600 bg-clip-text text-transparent hover:opacity-80 transition">
+                        Personality Insights
+                    </a>
+                </div>
+                <div class="hidden md:flex items-center space-x-8">
+                    <a href="/#about" class="nav-link text-gray-600 hover:text-indigo-600 transition">About</a>
+                    <a href="/#traits" class="nav-link text-gray-600 hover:text-indigo-600 transition">Traits</a>
+                    <a href="/#test" class="nav-link text-gray-600 hover:text-indigo-600 transition">Take Test</a>
+                    <a href="/results" class="nav-link text-indigo-600 font-semibold">Results</a>
+                </div>
+                <div class="md:hidden">
+                    <button onclick="toggleMobileMenu()" class="text-gray-600 hover:text-indigo-600 transition">
+                        <svg class="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
+                        </svg>
+                    </button>
+                </div>
+            </div>
+        </div>
+        <!-- Mobile Menu -->
+        <div id="mobile-menu" class="hidden md:hidden bg-white border-b border-gray-200">
+            <div class="px-2 pt-2 pb-3 space-y-1">
+                <a href="/#about" class="block px-3 py-2 text-gray-600 hover:text-indigo-600 transition">About</a>
+                <a href="/#traits" class="block px-3 py-2 text-gray-600 hover:text-indigo-600 transition">Traits</a>
+                <a href="/#test" class="block px-3 py-2 text-gray-600 hover:text-indigo-600 transition">Take Test</a>
+                <a href="/results" class="block px-3 py-2 text-indigo-600 font-semibold">Results</a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Results Container -->
+    <div class="pt-24 pb-16">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <!-- Navigation Tabs -->
+            <div class="flex flex-wrap justify-center mb-12 space-x-4">
+
+            </div>
+
+            <!-- Tab Contents -->
+            <div id="overview-tab" class="tab-content">
+                <div class="text-center mb-16">
+                    <h2 class="text-4xl font-bold text-gray-900 mb-6">Your Personality Profile</h2>
+                    <p class="text-xl text-gray-600 max-w-3xl mx-auto leading-relaxed" id="personality-type">
+                        <!-- Personality type will be displayed here -->
+                    </p>
+                </div>
+
+                <!-- Trait Scores -->
+                <div class="bg-white rounded-2xl p-8 shadow-sm mb-16">
+                    <h3 class="text-2xl font-semibold mb-8 text-gray-800">Your Trait Scores</h3>
+                    <div id="trait-scores" class="space-y-6">
+                        <!-- Trait scores will be displayed here -->
+                    </div>
+                </div>
+
+                <!-- Key Insights -->
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-8 mb-16">
+                    <div class="bg-white rounded-2xl p-8 shadow-sm">
+                        <h3 class="text-2xl font-semibold mb-6 text-gray-800">Key Strengths</h3>
+                        <div id="strengths" class="space-y-4">
+                            <!-- Strengths will be displayed here -->
+                        </div>
+                    </div>
+                    <div class="bg-white rounded-2xl p-8 shadow-sm">
+                        <h3 class="text-2xl font-semibold mb-6 text-gray-800">Growth Areas</h3>
+                        <div id="growth-areas" class="space-y-4">
+                            <!-- Growth areas will be displayed here -->
+                             <p>Your doing great</p>
+                        </div>
+                    </div>
+                    <div class="bg-white rounded-2xl p-8 shadow-sm">
+                        <h3 class="text-2xl font-semibold mb-6 text-gray-800">Communication Style</h3>
+                        <div id="communication-style" class="space-y-4">
+                            <!-- Communication style will be displayed here -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div id="detailed-analysis-tab" class="tab-content hidden">
+                <!-- Detailed analysis content will be loaded dynamically -->
+            </div>
+
+            <div id="compatibility-tab" class="tab-content hidden">
+                <!-- Compatibility content will be loaded dynamically -->
+            </div>
+
+            <div id="resources-tab" class="tab-content hidden">
+                <!-- Resources content will be loaded dynamically -->
+            </div>
+
+            <div id="insights-tab" class="tab-content hidden">
+                <!-- Insights content will be loaded dynamically -->
+            </div>
+
+            <!-- Action Buttons -->
+            <div class="flex flex-col sm:flex-row justify-center gap-4 mt-16">
+                <button onclick="downloadResults()" class="bg-gradient-to-r from-indigo-600 to-purple-600 text-white px-8 py-4 rounded-xl text-lg font-semibold hover:opacity-90 transition shadow-lg hover:shadow-xl transform hover:scale-105">
+                    Download Results
+                </button>
+                <button onclick="shareResults()" class="bg-gradient-to-r from-purple-600 to-pink-600 text-white px-8 py-4 rounded-xl text-lg font-semibold hover:opacity-90 transition shadow-lg hover:shadow-xl transform hover:scale-105">
+                    Share Results
+                </button>
+                <a href="/#test" class="bg-gradient-to-r from-pink-600 to-red-600 text-white px-8 py-4 rounded-xl text-lg font-semibold hover:opacity-90 transition shadow-lg hover:shadow-xl transform hover:scale-105 text-center">
+                    Take Test Again
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Load results from sessionStorage
+        let testResults = JSON.parse(sessionStorage.getItem('testResults'));
+
+        // Check if results exist
+        if (!testResults) {
+            window.location.href = '/#test';
+        }
+
+        // Function to handle tab switching
+        function showTab(tabName) {
+            // Hide all tab contents
+            document.querySelectorAll('.tab-content').forEach(tab => {
+                tab.classList.add('hidden');
+            });
+
+            // Remove active class from all buttons
+            document.querySelectorAll('.tab-button').forEach(button => {
+                button.classList.remove('active');
+            });
+
+            // Show selected tab and activate button
+            document.getElementById(`${tabName}-tab`).classList.remove('hidden');
+            event.target.classList.add('active');
+
+            // Load tab content if needed
+            if (tabName === 'detailed-analysis') {
+                loadDetailedAnalysis();
+            } else if (tabName === 'compatibility') {
+                loadCompatibility();
+            } else if (tabName === 'resources') {
+                loadResources();
+            } else if (tabName === 'insights') {
+                loadInsights();
+            }
+        }
+
+        // Function to toggle mobile menu
+        function toggleMobileMenu() {
+            const mobileMenu = document.getElementById('mobile-menu');
+            mobileMenu.classList.toggle('hidden');
+        }
+
+        // Function to display trait scores
+        function displayTraitScores() {
+            const traitScores = document.getElementById('trait-scores');
+            const scores = testResults.scores;
+            
+            traitScores.innerHTML = Object.entries(scores).map(([trait, score]) => `
+                <div class="space-y-2">
+                    <div class="flex justify-between items-center">
+                        <span class="text-lg font-medium text-gray-700">${trait}</span>
+                        <span class="text-lg font-semibold text-indigo-600">${score}/5</span>
+                    </div>
+                    <div class="w-full bg-gray-200 rounded-full h-2.5">
+                        <div class="trait-bar bg-gradient-to-r from-indigo-600 to-purple-600 h-2.5 rounded-full" 
+                             style="width: ${(score / 5) * 100}%"></div>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        // Function to display personality type
+        function displayPersonalityType() {
+            document.getElementById('personality-type').textContent = testResults.personality_type;
+        }
+
+        // Function to display strengths
+        function displayStrengths() {
+            const strengthsContainer = document.getElementById('strengths');
+            strengthsContainer.innerHTML = testResults.strengths.map(strength => `
+                <div class="flex items-center space-x-3">
+                    <svg class="w-5 h-5 text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                    </svg>
+                    <span class="text-gray-700">${strength}</span>
+                </div>
+            `).join('');
+        }
+
+        // Function to display growth areas
+        function displayGrowthAreas() {
+            const growthAreasContainer = document.getElementById('growth-areas');
+            growthAreasContainer.innerHTML = testResults.growth_areas.map(area => `
+                <div class="flex items-center space-x-3">
+                    <svg class="w-5 h-5 text-yellow-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"></path>
+                    </svg>
+                    <span class="text-gray-700">${area}</span>
+                </div>
+            `).join('');
+        }
+
+        // Function to display communication style
+        function displayCommunicationStyle() {
+            const communicationStyleContainer = document.getElementById('communication-style');
+            communicationStyleContainer.innerHTML = testResults.communication_style.map(style => `
+                <div class="flex items-center space-x-3">
+                    <svg class="w-5 h-5 text-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"></path>
+                    </svg>
+                    <span class="text-gray-700">${style}</span>
+                </div>
+            `).join('');
+        }
+
+        // Function to download results as PDF
+        function downloadResults() {
+            // Create a new jsPDF instance
+            const { jsPDF } = window.jspdf;
+            const doc = new jsPDF();
+            
+            // Set font
+            doc.setFont("helvetica");
+            
+            // Add title
+            doc.setFontSize(24);
+            doc.setTextColor(79, 70, 229); // Indigo color
+            doc.text("Personality Test Results", 20, 20);
+            
+            // Add personality type
+            doc.setFontSize(16);
+            doc.setTextColor(31, 41, 55); // Gray-900
+            doc.text(testResults.personality_type, 20, 40);
+            
+            // Add trait scores
+            doc.setFontSize(14);
+            doc.text("Trait Scores:", 20, 60);
+            
+            let yPos = 70;
+            Object.entries(testResults.scores).forEach(([trait, score]) => {
+                doc.setFontSize(12);
+                doc.text(`${trait}: ${score}/5`, 30, yPos);
+                yPos += 10;
+            });
+            
+            // Add strengths
+            yPos += 10;
+            doc.setFontSize(14);
+            doc.text("Key Strengths:", 20, yPos);
+            yPos += 10;
+            testResults.strengths.forEach(strength => {
+                doc.setFontSize(12);
+                doc.text(`• ${strength}`, 30, yPos);
+                yPos += 10;
+            });
+            
+            // Add growth areas
+            yPos += 10;
+            doc.setFontSize(14);
+            doc.text("Growth Areas:", 20, yPos);
+            yPos += 10;
+            testResults.growth_areas.forEach(area => {
+                doc.setFontSize(12);
+                doc.text(`• ${area}`, 30, yPos);
+                yPos += 10;
+            });
+            
+            // Add communication style
+            yPos += 10;
+            doc.setFontSize(14);
+            doc.text("Communication Style:", 20, yPos);
+            yPos += 10;
+            testResults.communication_style.forEach(style => {
+                doc.setFontSize(12);
+                doc.text(`• ${style}`, 30, yPos);
+                yPos += 10;
+            });
+            
+            // Add footer
+            const pageHeight = doc.internal.pageSize.height;
+            doc.setFontSize(10);
+            doc.setTextColor(107, 114, 128); // Gray-500
+            doc.text("Generated by Personality Insights", 20, pageHeight - 20);
+            doc.text(new Date().toLocaleDateString(), 20, pageHeight - 10);
+            
+            // Save the PDF
+            doc.save('personality-results.pdf');
+        }
+
+        // Function to share results
+        function shareResults() {
+            if (navigator.share) {
+                navigator.share({
+                    title: 'My Personality Test Results',
+                    text: `My personality type: ${testResults.personality_type}`,
+                    url: window.location.href
+                }).catch(console.error);
+            } else {
+                alert('Sharing is not supported on this browser. You can copy the URL and share it manually.');
+            }
+        }
+
+        // Initialize the results display
+        document.addEventListener('DOMContentLoaded', function() {
+            displayPersonalityType();
+            displayTraitScores();
+            displayStrengths();
+            displayGrowthAreas();
+            displayCommunicationStyle();
+        });
+    </script>
+</body>
+</html>
